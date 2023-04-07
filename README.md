@@ -1,3 +1,7 @@
+# Intall
+
+npm install autocomplete-trie-search
+
 # Introduction 
 
 The AutoCompleteTrieSearch API is an interface for a Trie data structure that allows for efficient autocompletion of text based on a given set of words. It provides the ability to insert new nodes into the Trie, generate autocomplete suggestions for a given text, and update the options used by the autocomplete search.
