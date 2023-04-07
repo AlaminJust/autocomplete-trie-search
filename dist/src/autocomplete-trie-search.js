@@ -51,7 +51,21 @@ class AutoCompleteTrieSearch {
             this.valueByKey.set(key, value);
         }
     }
-    insert(node) {
+    insert(nodes) {
+        let isInserted = false;
+        if (Array.isArray(nodes)) {
+            nodes.forEach(node => {
+                if (this.add(node)) {
+                    isInserted = true;
+                }
+            });
+        }
+        else {
+            isInserted = this.add(nodes);
+        }
+        return isInserted;
+    }
+    add(node) {
         var _a;
         // If node or node text is falsy or only whitespace, return false
         if (!node || !((_a = node.text) === null || _a === void 0 ? void 0 : _a.trim())) {

@@ -67,9 +67,25 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         }
     }
 
-    insert(node: INodeValue): boolean {
-        // If node or node text is falsy or only whitespace, return false
-        if (!node || !node.text?.trim()) {
+    insert(nodes: INodeValue | INodeValue[]): boolean {
+        let isInserted = false;
+        if(Array.isArray(nodes)){
+            nodes.forEach(node => {
+                if(this.add(node)){
+                    isInserted = true;
+                }
+            });
+        }
+        else {
+            isInserted = this.add(nodes);
+        }
+
+        return isInserted;
+    }
+    
+    private add(node: INodeValue): boolean{
+         // If node or node text is falsy or only whitespace, return false
+         if (!node || !node.text?.trim()) {
             return false;
         }
         
@@ -85,7 +101,6 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         // Return true to indicate successful insertion
         return true;
     }
-    
 
     /**
      * Inserts a node into a trie.
@@ -146,7 +161,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
      * based on the rank property, and then trimming it to the maximum number of suggestions.
      * @param node The node whose rank list is to be updated.
      */
-    updateRankList(node: TrieNode) {
+    private updateRankList(node: TrieNode) {
         let rankList: IRank[] = [];
       
         // Push the node's id and weight as a new object into the rank list

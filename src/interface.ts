@@ -115,7 +115,7 @@ export interface IAutoCompleteTrieSearch {
      * @param {INodeValue} node - The node to insert.
      * @returns {boolean} - True if the node was inserted successfully, false otherwise.
      */
-    insert(node: INodeValue): boolean;
+    insert(node: INodeValue | INodeValue[]): boolean;
   
     /**
      * Returns an array of autocomplete suggestions for the given text.
@@ -131,5 +131,5 @@ export interface IAutoCompleteTrieSearch {
      * @returns {void}
      */
     updateOptions(options: AutoCompleteTrieSearchOptions): void;
-  }
+}
   

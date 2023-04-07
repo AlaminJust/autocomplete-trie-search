@@ -22,12 +22,9 @@ let node2 = {
     weight: 9,
 };
 let node3 = {
-    text: 'Hellp you are good',
-    value: '',
+    text: 'Hellp you are good deveoloper',
+    value: { hl: 'hello man', dl: 'how are you' },
     weight: 9,
 };
-hello.insert(node);
-hello.insert(node1);
-hello.insert(node2);
-hello.insert(node3);
+hello.insert([node, node1, node2, node3, node3, node3]);
 console.log(hello.suggession('Hello'));
