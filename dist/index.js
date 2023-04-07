@@ -7,21 +7,27 @@ const hello = new autocomplete_trie_search_1.AutoCompleteTrieSearch({
     ignoreCase: false
 });
 let node = {
-    text: 'llo',
+    text: 'Hello world',
     value: '',
     weight: 5,
 };
 let node1 = {
-    text: 'llasafdasdasdf',
+    text: 'Hello I am fine',
     value: '',
     weight: 10,
 };
 let node2 = {
-    text: 'llj',
+    text: 'Hellw you are good',
+    value: '',
+    weight: 9,
+};
+let node3 = {
+    text: 'Hellp you are good',
     value: '',
     weight: 9,
 };
 hello.insert(node);
 hello.insert(node1);
 hello.insert(node2);
-console.log(hello.suggession('LLj'));
+hello.insert(node3);
+console.log(hello.suggession('Hello'));
