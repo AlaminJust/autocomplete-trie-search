@@ -23,16 +23,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeValue = exports.TrieNode = void 0;
+exports.NodeValue = exports.Rank = exports.TrieNode = void 0;
 const uuid = __importStar(require("uuid"));
 class TrieNode {
     constructor() {
         this.rankList = [];
         this.map = new Map();
         this.nodeValue = null;
+        this.ownRank = new Rank();
     }
 }
 exports.TrieNode = TrieNode;
+class Rank {
+    constructor() {
+        this.rank = 0;
+        this.id = "";
+    }
+}
+exports.Rank = Rank;
 class NodeValue {
     constructor(options) {
         this.DEFAULT_WEIGHT = 1;
@@ -40,7 +48,6 @@ class NodeValue {
         this.value = options.value || options.text;
         this.weight = options.weight || this.DEFAULT_WEIGHT;
         this._id = uuid.v4();
-        console.log("What is id", this._id);
     }
     get id() {
         return this._id;

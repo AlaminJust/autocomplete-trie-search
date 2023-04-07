@@ -82,8 +82,15 @@ class AutoCompleteTrieSearch {
         // If we've reached the end of the node's text, set the node value in the root node, update the rank list,
         // and return the root node
         if (index === node.text.length) {
-            rootNode.nodeValue = node;
-            this.addValueById(node.id, node.value);
+            if (rootNode.nodeValue) {
+                rootNode.ownRank.rank++;
+            }
+            else {
+                rootNode.nodeValue = node;
+                rootNode.ownRank.id = node.id;
+                rootNode.ownRank.rank = node.weight;
+                this.addValueById(node.id, node.value);
+            }
             this.updateRankList(rootNode);
             return rootNode;
         }
@@ -111,13 +118,9 @@ class AutoCompleteTrieSearch {
      * @param node The node whose rank list is to be updated.
      */
     updateRankList(node) {
-        var _a, _b;
         let rankList = [];
         // Push the node's id and weight as a new object into the rank list
-        rankList.push({
-            rank: (_a = node.nodeValue) === null || _a === void 0 ? void 0 : _a.weight,
-            id: (_b = node.nodeValue) === null || _b === void 0 ? void 0 : _b.id
-        });
+        rankList.push(node.ownRank);
         // Update the node's rank list with the new rank list
         node.rankList = this.mergeRankList(node.rankList, rankList);
     }

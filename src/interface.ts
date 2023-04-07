@@ -62,6 +62,12 @@ export interface ITrieNode {
      * @type {INodeValue | null}
      */
     nodeValue: INodeValue | null;
+
+    /**
+     * The value of own ranking
+     * @type {IRank}
+     */
+    ownRank: IRank;
 }
 
 

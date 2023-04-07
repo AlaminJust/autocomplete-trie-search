@@ -103,8 +103,16 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         // If we've reached the end of the node's text, set the node value in the root node, update the rank list,
         // and return the root node
         if (index === node.text.length) {
-            rootNode.nodeValue = node;
-            this.addValueById(node.id, node.value);
+            if(rootNode.nodeValue){
+                rootNode.ownRank.rank++;
+            }
+            else {
+                rootNode.nodeValue = node;
+                rootNode.ownRank.id = node.id;
+                rootNode.ownRank.rank = node.weight;
+                this.addValueById(node.id, node.value);
+            }
+
             this.updateRankList(rootNode);
             return rootNode;
         }
@@ -142,10 +150,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         let rankList: IRank[] = [];
       
         // Push the node's id and weight as a new object into the rank list
-        rankList.push({
-            rank: node.nodeValue?.weight as number,
-            id: node.nodeValue?.id as string
-        });
+        rankList.push(node.ownRank);
       
         // Update the node's rank list with the new rank list
         node.rankList = this.mergeRankList(node.rankList, rankList);
@@ -221,7 +226,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         const mergedList: IRank[] = [];
         list1 = list1 ?? [];
         list2 = list2 ?? [];
-        
+
         let i = 0; // Pointer for list1
         let j = 0; // Pointer for list2
         
