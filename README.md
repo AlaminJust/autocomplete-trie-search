@@ -1,6 +1,6 @@
 # Intall
 
-npm install autocomplete-trie-search
+    npm install autocomplete-trie-search
 
 # Introduction 
 
