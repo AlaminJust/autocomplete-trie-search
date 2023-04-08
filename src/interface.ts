@@ -99,29 +99,6 @@ export interface AutoCompleteTrieSearchOptions {
      * @default {boolean} true
      */
     ignoreCase?: boolean;
-
-    /**
-     * The number of nodes in the tree.
-     *
-     * @type {number}
-     */
-    nodeCount: number;
-
-    /**
-     * Clears all items from the trie.
-     *
-     * @returns {void}
-     */
-    clear(): void;
-
-    /**
-     * A function that will be called when the node value is updated.
-     *
-     * @callback OnUpdateCallback
-     * @param {NodeValue} newValue - The new value of the node.
-     * @returns {void}
-     */
-    onUpdate: (newValue: NodeValue) => void;
 }
 
 /**
@@ -165,5 +142,29 @@ export interface IAutoCompleteTrieSearch {
      * @returns {void}
      */
     updateOptions(options: AutoCompleteTrieSearchOptions): void;
+
+    
+    /**
+     * The number of nodes in the tree.
+     *
+     * @type {number}
+     */
+    nodeCount: number;
+
+    /**
+     * Clears all items from the trie.
+     *
+     * @returns {void}
+     */
+    clear(): void;
+
+    /**
+     * A function that will be called when the node value is updated.
+     *
+     * @callback OnUpdateCallback
+     * @param {NodeValue} newValue - The new value of the node.
+     * @returns {void}
+     */
+    onUpdate: (newValue: NodeValue) => void;
 }
   

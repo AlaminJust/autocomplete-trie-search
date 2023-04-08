@@ -260,11 +260,25 @@ class AutoCompleteTrieSearch {
         // Initialize an empty array for the rootRankList and get the current character
         let rootRankList = [];
         const current = text[index];
-        for (const [char, childNode] of rootNode.map.entries()) {
-            if (mismatchCount < this.allowedMismatchCount) {
-                let resultRankList = this.search(childNode, text, char === current ? mismatchCount : mismatchCount + 1, index + 1);
+        if (mismatchCount === this.allowedMismatchCount) {
+            const childNode = rootNode.map.get(current);
+            if (!childNode) {
+                return rootRankList;
+            }
+            else {
+                let resultRankList = this.search(childNode, text, mismatchCount, index + 1);
                 if (resultRankList) {
                     rootRankList = this.mergeRankList(rootRankList, resultRankList);
+                }
+            }
+        }
+        else {
+            for (const [char, childNode] of rootNode.map.entries()) {
+                if (mismatchCount < this.allowedMismatchCount) {
+                    let resultRankList = this.search(childNode, text, char === current ? mismatchCount : mismatchCount + 1, index + 1);
+                    if (resultRankList) {
+                        rootRankList = this.mergeRankList(rootRankList, resultRankList);
+                    }
                 }
             }
         }
