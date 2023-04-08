@@ -22,6 +22,16 @@ To create a new instance of the autocomplete search, import the package and crea
 
     const search = new AutoCompleteTrieSearch();
 
+# Hanlde update event
+    const search = new AutoCompleteTrieSearch();
+
+    search.onUpdate((product: any) => {
+        // rank updated, handle your product from here
+    });
+
+    search.insertOrUpddate({text:'hello', value: {id: 'ksldkjflksdjf'}});
+    search.insertOrUpddate({text:'hello', value: {id: 'testing update operation'}});
+
 # Inserting nodes into the Trie
 
     const node = { text: "example", value: { text:'example', id: 1 }, weight: 5 };
