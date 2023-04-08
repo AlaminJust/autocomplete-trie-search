@@ -1,6 +1,6 @@
 {
   "name": "autocomplete-trie-search",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "autocomplete-trie-search is an NPM package that provides fast and efficient autocomplete suggestions for text input fields using the trie data structure. With autocomplete-trie-search, you can easily integrate autocomplete functionality into your web or mobile app, improving the user experience and making it easier for users to find the information they need. The package is highly customizable, allowing you to control the number and order of suggested results, and is designed to work seamlessly with a wide range of front-end frameworks and libraries. Whether you're building a search engine, an e-commerce platform, or any other type of application that requires fast and accurate autocomplete suggestions, autocomplete-trie-search has you covered. Try it out today and see the difference it can make in your application!",
   "main": "dist/index.js",
   "type": "commonjs",
