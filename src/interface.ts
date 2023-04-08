@@ -1,3 +1,5 @@
+import { NodeValue } from "./trie-node";
+
 /**
  * Interface representing a rank object that stores the frequency of a word that passes through a Trie node.
  * @interface
@@ -31,13 +33,13 @@ export interface INodeValue{
      * The value associated with the node.
      * @type {any | undefined}
      */
-    value: any | undefined,
+    value?: any,
 
     /**
      * The weight or importance of the node value.
      * @type {number | undefined}
      */
-    weight: number | undefined,
+    weight?: number,
 }
 
 /**
@@ -81,7 +83,7 @@ export interface AutoCompleteTrieSearchOptions {
      * @type {number}
      * @default {number} 10
      */
-    maxSuggestion: number;
+    maxSuggestion?: number;
 
     /**
      * The maximum number of character mismatches allowed between the user input and the suggested words.
@@ -89,14 +91,37 @@ export interface AutoCompleteTrieSearchOptions {
      * @type {number} - An integer value representing the maximum number of allowed mismatches.
      * @default {number} 3
      */
-    allowedMismatchCount: number;
+    allowedMismatchCount?: number;
 
     /**
      * Determines whether the autocomplete search should be case-sensitive or case-insensitive.
      * @type {boolean}
      * @default {boolean} true
      */
-    ignoreCase: boolean;
+    ignoreCase?: boolean;
+
+    /**
+     * The number of nodes in the tree.
+     *
+     * @type {number}
+     */
+    nodeCount: number;
+
+    /**
+     * Clears all items from the trie.
+     *
+     * @returns {void}
+     */
+    clear(): void;
+
+    /**
+     * A function that will be called when the node value is updated.
+     *
+     * @callback OnUpdateCallback
+     * @param {NodeValue} newValue - The new value of the node.
+     * @returns {void}
+     */
+    onUpdate: (newValue: NodeValue) => void;
 }
 
 /**
@@ -111,12 +136,21 @@ export interface IAutoCompleteTrieSearch {
     root: ITrieNode;
   
     /**
-     * Inserts a node into the Trie.
-     * @param {INodeValue} node - The node to insert.
-     * @returns {boolean} - True if the node was inserted successfully, false otherwise.
+     * Inserts one or more nodes into the Trie, or updates existing nodes if they already exist.
+     *
+     * @param {INodeValue | INodeValue[]} node - The node or array of nodes to insert or update.
+     * @returns {boolean} - True if the nodes were inserted or updated successfully, false otherwise.
      */
-    insert(node: INodeValue | INodeValue[]): boolean;
-  
+    insertOrUpddate(node: INodeValue | INodeValue[]): boolean;
+
+    /**
+     * Removes a node from the Trie.
+     *
+     * @param {INodeValue} node - The node to remove.
+     * @returns {boolean} - True if the node was removed successfully, false otherwise.
+     */
+    delete(node: INodeValue): boolean;
+
     /**
      * Returns an array of autocomplete suggestions for the given text.
      * @param {string} text - The text to generate suggestions for.

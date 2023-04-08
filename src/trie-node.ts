@@ -35,6 +35,10 @@ export class NodeValue implements INodeValue {
     weight: number;
     
     constructor(options: INodeValue){
+        if(!options.text.trim()){
+            throw "Text can't be empty";
+        }
+        
         this.text = options.text;
         this.value = options.value || options.text;
         this.weight = options.weight || this.DEFAULT_WEIGHT;
@@ -43,5 +47,9 @@ export class NodeValue implements INodeValue {
 
     get id(): string {
         return this._id;
+    }
+
+    set id(value){
+        this._id = value;
     }
 }

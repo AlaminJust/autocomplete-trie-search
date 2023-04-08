@@ -4,24 +4,47 @@ import { NodeValue, TrieNode } from './trie-node';
 export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoCompleteTrieSearchOptions {
     private DEFAULT_MISMATCH_ALLOW = 3;
     private DEFAULT_MAX_SUGGESION = 10;
+    private DEFAULT_IGNORE_CASE = true;
     private MAX_RANK: number = 1000000000;
     private _root: TrieNode;
     private _maxSuggestion: number;
     private _valueByKey: Map<string, any>;
     private _allowedMismatchCount: number;
     private _ignoreCase: boolean;
+    private _nodeCount: number;
+    private onUpdateCallback: any;
 
-    constructor(options: AutoCompleteTrieSearchOptions | any) {
+    constructor(options?: AutoCompleteTrieSearchOptions) {
         this._valueByKey = new Map();
         this._root = new TrieNode();
-        this._maxSuggestion = options.maxSuggestion ?? this.DEFAULT_MAX_SUGGESION;
-        this._ignoreCase = options.ignoreCase ?? true;
-        this._allowedMismatchCount = options.allowedMismatchCount ?? this.DEFAULT_MISMATCH_ALLOW
+        this._nodeCount = 0;
+        this._maxSuggestion = options?.maxSuggestion ?? this.DEFAULT_MAX_SUGGESION;
+        this._ignoreCase = options?.ignoreCase ?? this.DEFAULT_IGNORE_CASE;
+        this._allowedMismatchCount = options?.allowedMismatchCount ?? this.DEFAULT_MISMATCH_ALLOW
     }
 
     updateOptions(options: AutoCompleteTrieSearchOptions): void {
-        this.maxSuggestion = options.maxSuggestion;
-        this.allowedMismatchCount = options.allowedMismatchCount;
+        this.maxSuggestion = options.maxSuggestion ?? this.maxSuggestion;
+        this.allowedMismatchCount = options.allowedMismatchCount ?? this.allowedMismatchCount;
+    }
+
+    /**
+     * The onUpdate method sets a callback function that will be called
+     * when the node value is updated.
+     *
+     * @param {OnUpdateCallback} callback - The callback function to set.
+     * @returns {void}
+     */
+    onUpdate(callback: any) {
+        this.onUpdateCallback = callback;
+    }
+
+    private set nodeCount(value) {
+        this._nodeCount = value;
+    }
+
+    get nodeCount(): number{
+        return this._nodeCount;
     }
 
     private set allowedMismatchCount(value) {
@@ -71,7 +94,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         return this.valueByKey.delete(key);
     }
 
-    insert(nodes: INodeValue | INodeValue[]): boolean {
+    insertOrUpddate(nodes: INodeValue | INodeValue[]): boolean {
         let isInserted = false;
         if(Array.isArray(nodes)){
             nodes.forEach(node => {
@@ -86,6 +109,59 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
 
         return isInserted;
     }
+
+    delete(node: INodeValue): boolean {
+        // Create a new NodeValue instance from the given node.
+        const newNode = new NodeValue(node);
+        // Call the remove method with the root of the tree and the new node to be deleted.
+        return this.remove(this.root, newNode);
+    }
+
+    private remove(rootNode: TrieNode, node: NodeValue, index: number = 0): boolean {
+        // If the root node doesn't exist or the index is out of bounds, return false
+        if (!rootNode || index > node.text.length) {
+            return false;
+        }
+    
+        // If we've reached the end of the node's text, remove the node value from the root node
+        if (index === node.text.length) {
+            if (!rootNode.nodeValue) {
+                return false;
+            }
+            this.removeValueById(rootNode.nodeValue.id);
+            node.id = rootNode.nodeValue.id;
+            rootNode.nodeValue = null;
+            this.removeFromRankList(rootNode, node);
+            return true;
+        }
+    
+        // Get the current character being removed
+        const char = node.text[index];
+    
+        // Get the child node corresponding to the current character
+        let childNode = rootNode.map.get(char);
+    
+        // If the child node doesn't exist, return false
+        if (!childNode) {
+            return false;
+        }
+    
+        // Recursively remove the remaining characters from the child node
+        const isDeleted = this.remove(childNode as TrieNode, node, index + 1);
+    
+        // If the child node was successfully deleted, update the root node's `map`
+        if (isDeleted) {
+            if (!childNode.nodeValue && childNode.map.size === 0) {
+                rootNode.map.delete(char);
+                this.nodeCount = this.nodeCount - 1;
+            }
+            this.removeFromRankList(rootNode, node);
+        }
+    
+        // Return the updated delete status
+        return isDeleted;
+    }
+    
     
     private add(node: INodeValue): boolean{
          // If node or node text is falsy or only whitespace, return false
@@ -128,6 +204,8 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
                 rootNode.nodeValue.value = node.value;
                 rootNode.nodeValue.weight = rootNode.ownRank.rank;
                 this.addValueById(rootNode.nodeValue.id, node.value);
+                node.weight = rootNode.ownRank.rank;
+                this.onUpdateCallback?.(node);
             }
             else {
                 rootNode.nodeValue = node;
@@ -150,6 +228,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         if (!childNode) {
             childNode = new TrieNode();
             rootNode.map.set(char, childNode);
+            this.nodeCount = this.nodeCount + 1;
         }
         
         // Recursively insert the remaining characters into the child node
@@ -162,6 +241,13 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
 
         // Return the updated root node
         return rootNode;
+    }
+
+    removeFromRankList(node: TrieNode, ignoreNode: NodeValue){
+        if(!ignoreNode)
+            return;
+
+        node.rankList = this.mergeRankList(node.rankList, [], ignoreNode);
     }
 
     /**
@@ -212,12 +298,12 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         // return the node's rank as a single element array with the node's ID
         if (index === text.length && mismatchCount === 0) {
             if(rootNode.nodeValue){
-                return [{
+                return this.mergeRankList([{
                     rank: this.MAX_RANK,
                     id: rootNode.nodeValue?.id as string
-                }];
+                }], rootNode.rankList);
             }
-            else{
+            else {
                 return rootNode.rankList;
             }
         }
@@ -245,7 +331,7 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
     }
     
 
-    private mergeRankList(list1: IRank[], list2: IRank[]): IRank[] {
+    private mergeRankList(list1: IRank[], list2: IRank[], ignoreNode: NodeValue | null = null): IRank[] {
         const mergedList: IRank[] = [];
         list1 = list1 ?? [];
         list2 = list2 ?? [];
@@ -259,6 +345,12 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
             if(list1[i].id === list2[j].id){
                 i++;
             }
+            else if(ignoreNode && list1[i].id == ignoreNode.id){
+                i++;
+            }
+            else if(ignoreNode && list2[j].id == ignoreNode.id){
+                j++;
+            }
             else if (list1[i].rank >= list2[j].rank) {
                 mergedList.push(list1[i]);
                 i++;
@@ -270,16 +362,30 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         
         // Add the remaining elements from list1, if any
         while (mergedList.length < this.maxSuggestion && i < list1.length) {
+            if(ignoreNode?.id == list1[i].id){
+                i++;
+                continue;
+            }
+
             mergedList.push(list1[i]);
             i++;
         }
         
         // Add the remaining elements from list2, if any
         while (mergedList.length < this.maxSuggestion && j < list2.length) {
+            if(list2[j].id == ignoreNode?.id){
+                j++;
+                continue;
+            }
+
             mergedList.push(list2[j]);
             j++;
         }
         
         return mergedList;
+    }
+
+    clear(): void {
+        this._root = new TrieNode();
     }
 }

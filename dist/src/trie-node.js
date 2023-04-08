@@ -44,6 +44,9 @@ exports.Rank = Rank;
 class NodeValue {
     constructor(options) {
         this.DEFAULT_WEIGHT = 1;
+        if (!options.text.trim()) {
+            throw "Text can't be empty";
+        }
         this.text = options.text;
         this.value = options.value || options.text;
         this.weight = options.weight || this.DEFAULT_WEIGHT;
@@ -51,6 +54,9 @@ class NodeValue {
     }
     get id() {
         return this._id;
+    }
+    set id(value) {
+        this._id = value;
     }
 }
 exports.NodeValue = NodeValue;
