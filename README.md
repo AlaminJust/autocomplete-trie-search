@@ -1,75 +1,96 @@
-# Intall
+# autocomplete-trie-search
+
+This package provides an autocomplete search functionality using a Trie data structure. It can be used to quickly search for suggestions based on a user's input.
+
+# Installation
+
+To install the package, run the following command:
 
     npm install autocomplete-trie-search
 
-# Introduction 
-
-The AutoCompleteTrieSearch API is an interface for a Trie data structure that allows for efficient autocompletion of text based on a given set of words. It provides the ability to insert new nodes into the Trie, generate autocomplete suggestions for a given text, and update the options used by the autocomplete search.
-
-
-# Interface
-
-The AutoCompleteTrieSearch interface consists of the following methods:
-
-# root
-
-The root property is the root node of the Trie.
-
-# insert(node: INodeValue): boolean
-
-The insert method inserts a node into the Trie. It takes a parameter node of type INodeValue, which represents the node to insert. The method returns a boolean value indicating whether the node was inserted successfully or not.
-
-# suggestion(text: string): any[]
-
-The suggestion method generates an array of autocomplete suggestions for a given text. It takes a parameter text of type string, which represents the text to generate suggestions for. The method returns an array of suggestions.
-
-# updateOptions(options: AutoCompleteTrieSearchOptions): void
-
-The updateOptions method updates the options used by the autocomplete search. It takes a parameter options of type AutoCompleteTrieSearchOptions, which represents the new options to use. The method does not return anything.
-
 # Usage
 
-To use the AutoCompleteTrieSearch API, you can create an instance of an object that implements the IAutoCompleteTrieSearch interface. You can then call the various methods of the interface on that object.
+Creating a new instance of the autocomplete search
+To create a new instance of the autocomplete search, import the package and create a new instance:
 
-# Code
+    import { AutoCompleteTrieSearch } from "autocomplete-trie-search";
 
-        import { AutoCompleteTrieSearch } from 'autocomplete-trie-search';
+    const search = new AutoCompleteTrieSearch();
 
-        const hello = new AutoCompleteTrieSearch({
-            maxSuggestion: 3,
-            allowedMismatchCount: 3,
-            ignoreCase: true
-        });
+# Inserting nodes into the Trie
 
+    const node = { text: "example", value: { text:'example', id: 1 }, weight: 5 };
+    search.insertOrUpddate(node);
 
-        let node: INodeValue = {
-            text: 'Hello world',
-            value: '',
-            weight: 5,
-        }
-        let node1: INodeValue = {
-            text: 'Hello I am fine',
-            value: '',
-            weight: 10,
-        }
-        let node2: INodeValue = {
-            text: 'Hellw you are good',
-            value: '',
-            weight: 9,
-        }
-        let node3: INodeValue = {
-            text: 'Hellp you are good',
-            value: '',
-            weight: 9,
-        }
-        hello.insert(node);
-        hello.insert(node1);
-        hello.insert(node2);
-        hello.insert(node3);
+    const nodes = [
+      { text: "example", value: { text:'example', id: 1 }, weight: 5 },
+      { text: "sample", value: { text:'sample', id: 2 }, weight: 3 },
+    ];
+    search.insertOrUpddate(nodes);
+    
+# Removing nodes from the Trie
 
-        console.log(hello.suggession('Hello')); // '[ 'Hello I am fine', 'Hellw you are good', 'Hellp you are good' ]'
+To remove a node from the Trie, call the delete() method on the search instance, passing in the node to remove:
 
+    const node = { text: "example", value: { id: 1 }, weight: 5 };
+    search.delete(node);
+    
+# Generating suggestions
 
-# Conclusion
+To generate suggestions for a user's input, call the suggestion() method on the search instance, passing in the input text:
 
-The AutoCompleteTrieSearch API is a powerful interface for implementing autocompletion functionality in your applications. By using the Trie data structure, it allows for efficient generation of autocomplete suggestions based on a given set of words.
+    const text = "exam";
+    const suggestions = search.suggestion(text);
+    console.log(suggestions); // [{text:"example",id:1}]
+
+# Updating search options
+
+    const newOptions = {
+      maxSuggestion: 5,
+      allowedMismatchCount: 2
+    };
+
+    search.updateOptions(newOptions);
+    
+# Clearing the Trie
+
+To clear all nodes from the Trie, call the clear() method on the search instance:
+
+    search.clear();
+    
+# API
+
+`AutoCompleteTrieSearch()`
+Creates a new instance of the autocomplete search.
+
+`insertOrUpddate(node: INodeValue | INodeValue[]): boolean`
+Inserts one or more nodes into the Trie, or updates existing nodes if they already exist. Returns true if the nodes were inserted or updated successfully, false otherwise.
+
+`delete(node: INodeValue): boolean`
+Removes a node from the Trie. Returns true if the node was removed successfully, false otherwise.
+
+`suggestion(text: string): any[]`
+Returns an array of autocomplete suggestions for the given text.
+
+`updateOptions(options: AutoCompleteTrieSearchOptions): void`
+Updates the options used by the autocomplete search.
+
+`clear(): void`
+Clears all nodes from the Trie.
+
+# Interfaces
+
+`IRank`
+Interface representing a rank object that stores the frequency of a word that passes through a Trie node.
+
+`INodeValue`
+Interface representing the value of a Trie Node.
+
+`ITrieNode`
+Interface representing a Trie Node.
+
+`AutoCompleteTrieSearchOptions`
+Options for configuring an autocomplete search using a Trie data structure.
+
+`IAutoCompleteTrieSearch`
+Interface representing an autocomplete search using a Trie data structure.

@@ -319,7 +319,13 @@ class AutoCompleteTrieSearch {
         return mergedList;
     }
     clear() {
+        var _a, _b, _c;
+        this._valueByKey = new Map();
         this._root = new trie_node_1.TrieNode();
+        this._nodeCount = 0;
+        this._maxSuggestion = (_a = this._maxSuggestion) !== null && _a !== void 0 ? _a : this.DEFAULT_MAX_SUGGESION;
+        this._ignoreCase = (_b = this._ignoreCase) !== null && _b !== void 0 ? _b : this.DEFAULT_IGNORE_CASE;
+        this._allowedMismatchCount = (_c = this._allowedMismatchCount) !== null && _c !== void 0 ? _c : this.DEFAULT_MISMATCH_ALLOW;
     }
 }
 exports.AutoCompleteTrieSearch = AutoCompleteTrieSearch;
