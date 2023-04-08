@@ -204,7 +204,8 @@ Interface representing an autocomplete search using a Trie data structure.
 
 
 `For inserting 10000 data it's taking only 225 ms`
-`For taking suggestion, the suggestion method take onle 5 ms`
+
+`For providing suggestion, the suggestion method take onle 5 ms`
 
 Same time will take for update, delete a text from this data structure.
 # Products usage
