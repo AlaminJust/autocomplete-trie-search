@@ -8,6 +8,11 @@ To install the package, run the following command:
 
     npm install autocomplete-trie-search
 
+# Unit test project using angular
+
+`https://github.com/AlaminJust/autocomplete_trie_search_test`
+
+    run command: ng test
 # Usage
 
 Creating a new instance of the autocomplete search
@@ -117,75 +122,76 @@ Interface representing an autocomplete search using a Trie data structure.
 
     });
 
-  it('Suggestion performances by inserting are 10000 data', () => {
-    const search = new AutoCompleteTrieSearch({maxSuggestion: 10, allowedMismatchCount: 3});
+    it('Suggestion performances by inserting are 10000 data', () => {
+        const search = new AutoCompleteTrieSearch({maxSuggestion: 10, allowedMismatchCount: 3});
 
-    for(let i = 0; i<10000; i++){
-      const node: INodeValue = {
-        text: uuid.v4(),
-        value: {id: uuid.v4(), text: i},
-        weight: 1
-      };
-      search.insertOrUpddate(node);
-    }
+        for(let i = 0; i<10000; i++){
+        const node: INodeValue = {
+            text: uuid.v4(),
+            value: {id: uuid.v4(), text: i},
+            weight: 1
+        };
+        search.insertOrUpddate(node);
+        }
 
-    var list = [
-      {
-        text: "hello123world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 4
-      },
-      {
-        text: "hello231world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 5
-      },
-      {
-        text: "hello3423world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 6
-      },
-      {
-        text: "hello423world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 7
-      },
-      {
-        text: "hello53world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 8
-      },
-      {
-        text: "hello43543world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 9
-      },
-      {
-        text: "hello4534world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 11
-      },
-      {
-        text: "hello545world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 12
-      },
-      {
-        text: "hello4543world",
-        value: {id: uuid.v4(), text: 'AL AMIN'},
-        weight: 13
-      }
-    ]
-    
-    search.insertOrUpddate(list);
-    
-    const sStart = performance.now();
+        var list = [
+        {
+            text: "hello123world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 4
+        },
+        {
+            text: "hello231world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 5
+        },
+        {
+            text: "hello3423world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 6
+        },
+        {
+            text: "hello423world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 7
+        },
+        {
+            text: "hello53world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 8
+        },
+        {
+            text: "hello43543world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 9
+        },
+        {
+            text: "hello4534world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 11
+        },
+        {
+            text: "hello545world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 12
+        },
+        {
+            text: "hello4543world",
+            value: {id: uuid.v4(), text: 'AL AMIN'},
+            weight: 13
+        }
+        ]
+        
+        search.insertOrUpddate(list);
+        
+        const sStart = performance.now();
 
-    console.log('Autocomplete suggessions1 => ', search.suggession("hello"));
-    const takenForSuggesion = performance.now() - sStart;
-    console.log("Time taken for providing suggesion : "+ takenForSuggesion + " in millisecond.", 'nodecount: ', search.nodeCount)
-    expect(takenForSuggesion).toBeLessThan(1000)
-  });
+        console.log('Autocomplete suggessions1 => ', search.suggession("hello"));
+        const takenForSuggesion = performance.now() - sStart;
+        console.log("Time taken for providing suggesion : "+ takenForSuggesion + " in millisecond.", 'nodecount: ', search.nodeCount)
+        expect(takenForSuggesion).toBeLessThan(1000)
+    });
+
 
 `For inserting 10000 data it's taking only 225 ms`
 `For taking suggestion, the suggestion method take onle 5 ms`
