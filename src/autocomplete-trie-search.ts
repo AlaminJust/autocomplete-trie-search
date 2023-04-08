@@ -386,6 +386,11 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
     }
 
     clear(): void {
+        this._valueByKey = new Map();
         this._root = new TrieNode();
+        this._nodeCount = 0;
+        this._maxSuggestion =  this._maxSuggestion ?? this.DEFAULT_MAX_SUGGESION;
+        this._ignoreCase = this._ignoreCase ?? this.DEFAULT_IGNORE_CASE;
+        this._allowedMismatchCount = this._allowedMismatchCount ?? this.DEFAULT_MISMATCH_ALLOW
     }
 }
