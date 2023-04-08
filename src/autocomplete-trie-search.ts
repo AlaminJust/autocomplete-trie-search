@@ -67,6 +67,10 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         }
     }
 
+    private removeValueById(key: string): boolean{
+        return this.valueByKey.delete(key);
+    }
+
     insert(nodes: INodeValue | INodeValue[]): boolean {
         let isInserted = false;
         if(Array.isArray(nodes)){
@@ -118,8 +122,12 @@ export class AutoCompleteTrieSearch implements IAutoCompleteTrieSearch, AutoComp
         // If we've reached the end of the node's text, set the node value in the root node, update the rank list,
         // and return the root node
         if (index === node.text.length) {
-            if(rootNode.nodeValue){
+            if(rootNode.nodeValue) {
+                this.removeValueById(rootNode.nodeValue.id);
                 rootNode.ownRank.rank++;
+                rootNode.nodeValue.value = node.value;
+                rootNode.nodeValue.weight = rootNode.ownRank.rank;
+                this.addValueById(rootNode.nodeValue.id, node.value);
             }
             else {
                 rootNode.nodeValue = node;

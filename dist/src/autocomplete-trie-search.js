@@ -51,6 +51,9 @@ class AutoCompleteTrieSearch {
             this.valueByKey.set(key, value);
         }
     }
+    removeValueById(key) {
+        return this.valueByKey.delete(key);
+    }
     insert(nodes) {
         let isInserted = false;
         if (Array.isArray(nodes)) {
@@ -97,7 +100,11 @@ class AutoCompleteTrieSearch {
         // and return the root node
         if (index === node.text.length) {
             if (rootNode.nodeValue) {
+                this.removeValueById(rootNode.nodeValue.id);
                 rootNode.ownRank.rank++;
+                rootNode.nodeValue.value = node.value;
+                rootNode.nodeValue.weight = rootNode.ownRank.rank;
+                this.addValueById(rootNode.nodeValue.id, node.value);
             }
             else {
                 rootNode.nodeValue = node;

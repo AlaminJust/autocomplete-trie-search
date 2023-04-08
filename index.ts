@@ -27,7 +27,12 @@ let node3: INodeValue = {
     value: {hl: 'hello man', dl: 'how are you'},
     weight: 9,
 }
+let node4: INodeValue = {
+    text: 'Hellp you are good deveoloper',
+    value: {hl: 'hello good man', dl: 'how are you'},
+    weight: 9,
+}
 
-hello.insert([node,node1,node2,node3,node3,node3]);
+hello.insert([node,node1,node2,node3,node3,node3,node4]);
 
 console.log(hello.suggession('Hello'));
